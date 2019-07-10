@@ -1,0 +1,22 @@
+## Macro title: redirect
+## Body processing: Rendered
+## Description: Redirect to the href of the first anchor in the macro body (hint: use in conjunction w/ search macro)
+##
+## Developed by: rrotter
+## Date created: 2017-04-27
+## Installed by: rrotter
+## @noparams
+
+<script type="text/javascript">
+
+AJS.toInit(function(){
+  setTimeout(function() {
+    location.href = $($("div.redirect-macro").find("a")[0]).attr('href');
+  }, 1000);
+});
+</script>
+
+<div class="redirect-macro">
+  <span>Redirecting to:</span>
+  $!body
+</div>

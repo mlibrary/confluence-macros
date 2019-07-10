@@ -1,0 +1,39 @@
+## Macro title: Space Permission Info Box
+## Description: Render info box showing permissions for this space.
+## Macro has a body: N
+##
+## Developed by: rrotter
+## Date created: 2019-07-09
+## @noparams
+
+#set ($public = false)
+##iterate over all space permissions
+#foreach( $spacePermission in $content.space.permissions)
+#if( $spacePermission.type == "VIEWSPACE" && !$spacePermission.isUserPermission() && !$spacePermission.isGroupPermission() )
+  #set ($public = true)
+#end
+#end
+
+            <ac:structured-macro ac:name="hide-from-anon" ac:schema-version="1">
+                <ac:parameter ac:name="atlassian-macro-output-type">INLINE</ac:parameter>
+                <ac:rich-text-body>
+                    <p class="auto-cursor-target"><br /></p>
+#if($public)
+                    <ac:structured-macro ac:name="warning" ac:schema-version="1">
+                        <ac:rich-text-body>
+                            <p>This Confluence Space, $space.getName(), is publicly viewable. All content on this wiki may be viewed by anonymous users and web crawlers.
+#end
+#if(!$public)
+                    <ac:structured-macro ac:name="info" ac:schema-version="1">
+                        <ac:rich-text-body>
+                            <p>This Confluence Space, $space.getName(), is viewable only by Library and selected University staff. It is <i>not viewable</i> by the general public, anonymous users, or web crawlers.
+#end
+See our statement on
+                                <ac:link>
+                                    <ri:page ri:space-key="AI" ri:content-title="Access to Confluence and Jira Content" />
+                                </ac:link> for further information.</p>
+                        </ac:rich-text-body>
+                    </ac:structured-macro>
+                    <p class="auto-cursor-target"><br /></p>
+                </ac:rich-text-body>
+            </ac:structured-macro>

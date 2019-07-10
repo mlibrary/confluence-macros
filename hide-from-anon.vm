@@ -1,0 +1,21 @@
+## Macro title: Hide content from anonymous users
+## Description: Only display content inside this block to authenticated users. Only hidden by CSS and JS, so don't use this for secrets.
+##
+## Developed by: rrotter
+## Date created: 2019-07-09
+## @noparams
+
+<style type="text/css">
+@media all {
+    .hide-from-anon-hidden { display: none; }
+}
+</style>
+
+<script type="text/javascript">
+AJS.toInit(function(){
+  if (AJS.params.userDisplayName) {
+	jQuery(".hide-from-anon-hidden").removeClass("hide-from-anon-hidden");
+  }
+});
+</script>
+<div class="hide-from-anon-content hide-from-anon-hidden">$!body</div>
