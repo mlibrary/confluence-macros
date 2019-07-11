@@ -1,9 +1,6 @@
 ## Macro title: Show Group Membership
 ## Description: List all the members of a group
 ## Macro has a body: N
-## Users Pictures for Group - Confluence User Macro
-##
-##   Produces a pile of user profile pictures for members of a specific group
 ##
 ## Credit to David Simpson for most of the logic in this macro, which was copied
 ##   from this forum post: https://community.atlassian.com/t5/Confluence-questions/Retrieving-list-of-users-in-group-macro/qaq-p/304537
