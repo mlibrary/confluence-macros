@@ -1,0 +1,8 @@
+## @noparams
+
+#if($req.userPrincipal.name)
+#set($confluenceUser = $userAccessor.getUserByName($req.userPrincipal.name))	
+Hello, <ac:link><ri:user ri:userkey="$confluenceUser.key" /></ac:link>
+#else
+You are not logged in.
+#end

@@ -1,0 +1,126 @@
+## Macro title: List Full Space Permissions
+## Description: List detailed permissions for the current Space
+## Macro has a body: N
+##
+## Developed by: rrotter
+## Date created: 2019-07-11
+## @noparams
+
+<h2>Permissions for space: $space.getName()</h2>
+
+## require user login to view this content
+#if($req.userPrincipal.name)
+
+#set($viewer_groups = [])
+#set($editor_groups = [])
+#set($commenter_groups = [])
+#set($viewer_users  = [])
+#set($editor_users  = [])
+#set($commenter_users  = [])
+#set($anonview = false)
+#set($anonedit = false)
+#set($anoncomment = false)
+
+## hack to suppress junk that is output by this block
+<span style="display: none;">
+#foreach( $permission in $content.space.permissions)
+  #if( $permission.type == "VIEWSPACE" )
+    #if( $permission.isUserPermission() )
+      $viewer_users.add($permission.getUserName())
+    #elseif( $permission.isGroupPermission() )
+      $viewer_groups.add($permission.getGroup())
+    #else
+      #set($anonview = true)
+    #end
+  #elseif( $permission.type == "EDITSPACE" )
+    #if( $permission.isUserPermission() )
+      $editor_users.add($permission.getUserName())
+    #elseif( $permission.isGroupPermission() )
+      $editor_groups.add($permission.getGroup())
+    #else
+      #set($anonedit = true)
+    #end
+  #elseif( $permission.type == "COMMENT" )
+    #if( $permission.isUserPermission() )
+      $commenter_users.add($permission.getUserName())
+    #elseif( $permission.isGroupPermission() )
+      $commenter_groups.add($permission.getGroup())
+    #else
+      #set($anoncomment = true)
+    #end
+  #end
+#end
+</span>
+
+<h3>Viewers</h3>
+#if ($anonview)
+<p>Anyone may view</p>
+#else
+<ul>
+#foreach( $g in $viewer_groups )
+  <li>
+    <ac:structured-macro ac:name="show-group-membership" ac:schema-version="1">
+      <ac:parameter ac:name="Group">$g</ac:parameter>
+    </ac:structured-macro>
+  </li>
+#end
+#foreach( $u in $viewer_users )
+  <li>
+    #set($confluenceUser = $userAccessor.getUserByName($u))	
+    <ac:link>
+      <ri:user ri:userkey="$confluenceUser.key" />
+    </ac:link>
+  </li>
+#end
+</ul>
+#end
+
+<h3>Editors</h3>
+#if ($anonedit)
+<p>Anyone may edit</p>
+#else
+<ul>
+#foreach( $g in $editor_groups )
+  <li>
+    <ac:structured-macro ac:name="show-group-membership" ac:schema-version="1">
+      <ac:parameter ac:name="Group">$g</ac:parameter>
+    </ac:structured-macro>
+  </li>
+#end
+#foreach( $u in $editor_users )
+  <li>
+    #set($confluenceUser = $userAccessor.getUserByName($u))	
+    <ac:link>
+      <ri:user ri:userkey="$confluenceUser.key" />
+    </ac:link>
+  </li>
+#end
+</ul>
+#end
+
+<h3>Commenters</h3>
+#if ($anoncomment)
+<p>Anyone may comment</p>
+#else
+<ul>
+#foreach( $g in $commenter_groups )
+  <li>
+    <ac:structured-macro ac:name="show-group-membership" ac:schema-version="1">
+      <ac:parameter ac:name="Group">$g</ac:parameter>
+    </ac:structured-macro>
+  </li>
+#end
+#foreach( $u in $commenter_users )
+  <li>
+    #set($confluenceUser = $userAccessor.getUserByName($u))	
+    <ac:link>
+      <ri:user ri:userkey="$confluenceUser.key" />
+    </ac:link>
+  </li>
+#end
+</ul>
+#end
+
+#else
+You must be logged in to view space permissions.
+#end

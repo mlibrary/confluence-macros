@@ -1,0 +1,50 @@
+## Macro title: Show Group Membership
+## Description: List all the members of a group
+## Macro has a body: N
+## Users Pictures for Group - Confluence User Macro
+##
+##   Produces a pile of user profile pictures for members of a specific group
+##
+## Credit to David Simpson for most of the logic in this macro, which was copied
+##   from this forum post: https://community.atlassian.com/t5/Confluence-questions/Retrieving-list-of-users-in-group-macro/qaq-p/304537
+##
+## WARNING:
+##
+##   Use very sparingly as this *will* slow down large Confluence instances.
+##   Yes, it will try to print out 100,000 users if you have that many in the group
+##
+## @param Group:title=Group Name|type=string|required=true|desc=The group name (yes, really)
+  
+#set($containerManagerClass = $action.class.forName('com.atlassian.spring.container.ContainerManager'))
+#set($getInstanceMethod = $containerManagerClass.getDeclaredMethod('getInstance',null))
+#set($containerManager = $getInstanceMethod.invoke(null,null))
+#set($containerContext = $containerManager.containerContext)
+  
+#set($userAccessor = $containerManager.containerContext.getComponent('userAccessor'))
+#set($groupManager = $containerManager.containerContext.getComponent("groupManager"))
+#set($group = $groupManager.getGroup($paramGroup))
+#set($users = $userAccessor.getMemberNamesAsList($group) )
+
+<style type="text/css">
+@media all {
+  .show-group-membership-macro .expand-control {
+    margin-bottom: 0px;
+  }
+}
+</style>
+
+<span class="show-group-membership-macro">
+  <ac:structured-macro ac:name="expand" ac:schema-version="1">
+    <ac:parameter ac:name="title">$paramGroup</ac:parameter>
+    <ac:rich-text-body>
+      <ul>
+        #foreach( $username in $users )
+          #set($confluenceUser = $userAccessor.getUserByName($username))	
+          <li><ac:link>
+            <ri:user ri:userkey="$confluenceUser.key" />
+          </ac:link></li>
+        #end
+      </ul>
+    </ac:rich-text-body>
+  </ac:structured-macro>
+</span>
